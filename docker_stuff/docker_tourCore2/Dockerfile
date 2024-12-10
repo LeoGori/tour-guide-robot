@@ -128,7 +128,7 @@ ENV icub_firmware_shared_DIR=${robotology_install_folder}/icub-firmware-shared/b
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/robotology/icub-main.git -b devel
-RUN cd icub-main && mkdir build && cd build && \
+RUN cd icub-main && git pull && mkdir build && cd build && \
     cmake .. \
     -DCMAKE_BUILD_TYPE=Release \
     -DENABLE_icubmod_cartesiancontrollerserver=ON \
