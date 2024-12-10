@@ -129,7 +129,7 @@ RUN sudo ln -s /usr/local/share/bash-completion/completions/yarp /usr/share/bash
 # Build icub-main
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/robotology/icub-main.git -b devel
+RUN git clone https://github.com/robotology/icub-main.git -b devel && echo test
 RUN cd icub-main && mkdir build && cd build && \
     cmake .. \
     -DCMAKE_BUILD_TYPE=Release \
