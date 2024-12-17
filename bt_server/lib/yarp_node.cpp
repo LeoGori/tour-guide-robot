@@ -11,7 +11,7 @@
 
 
 #include <yarp_node.h>
-#include <behaviortree_cpp_v3/leaf_node.h>
+#include <behaviortree_cpp/leaf_node.h>
 #include <Skill_request.h>
 #include <iostream>
 #include <yarp/os/RpcClient.h>

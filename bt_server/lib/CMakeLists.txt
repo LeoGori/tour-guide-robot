@@ -24,5 +24,5 @@ target_link_libraries(yarp_bt_nodes
     YARP::YARP_os
     YARP::YARP_init
     ament_index_cpp::ament_index_cpp
-    BT::behaviortree_cpp_v3
+    BT::behaviortree_cpp
     skill_interface)

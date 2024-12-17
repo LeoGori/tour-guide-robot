@@ -10,21 +10,21 @@
  */
 
 #ifdef ZMQ_FOUND
-#include "behaviortree_cpp_v3/loggers/bt_zmq_publisher.h"
+#include "behaviortree_cpp/loggers/bt_zmq_publisher.h"
 #endif
 
 #include <iostream>
-#include <behaviortree_cpp_v3/behavior_tree.h>
+#include <behaviortree_cpp/behavior_tree.h>
 #include <yarp_condition.h>
 #include <yarp_action.h>
 #include <thread> // std::this_thread::sleep_for
 #include <chrono> // std::chrono::seconds
 #include <yarp/os/LogStream.h>
-#include <behaviortree_cpp_v3/bt_factory.h>
+#include <behaviortree_cpp/bt_factory.h>
 
-#include <behaviortree_cpp_v3/loggers/bt_cout_logger.h>
-#include <behaviortree_cpp_v3/loggers/bt_minitrace_logger.h>
-#include <behaviortree_cpp_v3/loggers/bt_file_logger.h>
+#include <behaviortree_cpp/loggers/bt_cout_logger.h>
+#include <behaviortree_cpp/loggers/bt_minitrace_logger.h>
+#include <behaviortree_cpp/loggers/bt_file_logger.h>
 
 #include <yarp/os/Network.h>
 #include <yarp/os/Port.h>
