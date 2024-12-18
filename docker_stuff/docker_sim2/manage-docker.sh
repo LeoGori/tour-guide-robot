@@ -15,6 +15,7 @@ usage()
     echo "    -d, --devel                        Build/run the image with the '$DEVEL_SUFFIX' tag"
     echo "    -e, --repo  + \"repo_name\"          Build/run the image with the passed repository reference"
     echo "    -r, --ros_distro + \"distro_name\"   Build/run the image with the passed distro (the passed value will be also used to compose the image tag)"
+    echo "    -g, --gz_version + \"gz_version\"    Build/run the image with the passed gazebo version (the passed value will be also used to compose the image tag)"
     echo "    -y, --yarp_branch + \"yarp branch\"  Build/run the image with the passed yarp branch (the passed value, if different from \"master\", will be also used to compose the image tag)."
     echo "                                       If not passed, the branch used will be \"master\""
     echo "    -h, --help                         See current help"
@@ -88,6 +89,16 @@ get_opts()
                 ROS_SET=true
                 shift
                 ;;
+            -g|--gz_version)
+                if [[ $GZ_SET == "true" ]]; then
+                    echo "Gazebo version already set"
+                    usage
+                fi
+                shift
+                GZ_VERS=$1
+                GZ_SET=true
+                shift
+                ;;
             -y|--yarp_vers)
                 if [[ $YARP_SET == "true" ]]; then
                     echo "YARP branch already set already set"
@@ -144,6 +155,7 @@ BASE_TAG_DEF="tourSim2"
 BUILD_SUFFIX=$DEVEL_SUFFIX
 VERSION="1.0.0"
 ROS_DISTRO=$ROS_DEF
+GZ_VERS=$GAZEBO_DEF
 YARP_BRANCH=$YARP_DEF
 PARENT_SUFFIX=$UBUNTU_SUFFIX
 IMAGE_SET=false
@@ -151,6 +163,7 @@ BUILD_SET=false
 GONNA_BUILD=false
 RUN_WITH_GPU=true
 ROS_SET=false
+GZ_SET=false
 YARP_SET=false
 IMAGE=$UBUNTU_DEF
 REPO=$REPO_DEF
@@ -166,7 +179,7 @@ get_opts $@
 if [[ $YARP_BRANCH != "master" ]]; then
     YARP_TAG=$YARP_BRANCH$JUNCTION
 fi
-COMPLETE_IMAGE_NAME=$REPO$REPO_SEP$BASE_TAG$JUNCTION$PARENT_SUFFIX$JUNCTION$ROS_DISTRO$JUNCTION$YARP_TAG$BUILD_SUFFIX
+COMPLETE_IMAGE_NAME=$REPO$REPO_SEP$BASE_TAG$JUNCTION$PARENT_SUFFIX$JUNCTION$ROS_DISTRO$JUNCTION$GZ_VERS$JUNCTION$YARP_TAG$BUILD_SUFFIX
 
 echo $COMPLETE_IMAGE_NAME
 

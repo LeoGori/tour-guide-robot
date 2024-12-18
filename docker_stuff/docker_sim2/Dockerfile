@@ -7,6 +7,7 @@ ARG yarp_branch="master"
 ARG ros2_dev_remote="robotology"
 ARG ros2_dev_branch=${yarp_branch}
 ARG gazebo_pkg=ros-${ros_distro}-ros-gz
+ARG gazebo_version=harmonic
 
 # Non-interactive installation mode
 ENV DEBIAN_FRONTEND=noninteractive
@@ -155,22 +156,21 @@ RUN cd navigation && mkdir build && cd build && /bin/bash -c "source /opt/ros/${
 ENV navigation_ROOT=${robotology_install_folder}/navigation
 ENV navigation_DIR=${robotology_install_folder}/navigation/build
 
-# Gazebo
-RUN sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
-RUN wget https://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
-RUN sudo apt-get update && sudo apt-get install -y gazebo-common gazebo libgazebo-dev mesa-utils && sudo rm -rf /var/lib/apt/lists/*
 
-# Gazebo Plugins
+# Gazebo
+RUN sudo curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
+RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
+RUN sudo apt-get update
+RUN sudo apt-get install gz-${gazebo_version}
+
+# Gz-sim Plugins
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/robotology/gazebo-yarp-plugins -b master
-RUN cd gazebo-yarp-plugins && mkdir build && cd build && \
-    cmake .. \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DGAZEBO_YARP_PLUGINS_DISABLE_IMPLICIT_NETWORK_WRAPPERS=ON && \
-    make -j4
-ENV GazeboYARPPlugins_ROOT=${robotology_install_folder}/gazebo-yarp-plugins
-ENV GazeboYARPPlugins_DIR=${robotology_install_folder}/gazebo-yarp-plugins/build
+RUN git clone https://github.dev/robotology/gz-sim-yarp-plugins
+RUN cd gz-sim-yarp-plugins && mkdir build && cd build && \
+    cmake -DCMAKE_INSTALL_PREFIX=${robotology_install_folder}/gz-sim-yarp-plugins/install \
+    -DCMAKE_PREFIX_PATH=${robotology_install_folder}/gz-sim-yarp-plugins/install && \
+    make -j11 && make install
 
 # CER
 USER ${robotology_install_user}
