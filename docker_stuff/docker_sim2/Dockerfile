@@ -161,7 +161,7 @@ ENV navigation_DIR=${robotology_install_folder}/navigation/build
 RUN sudo curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
 RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
 RUN sudo apt-get update
-RUN sudo apt-get install gz-${gazebo_version}
+RUN sudo apt-get install -y gz-${gazebo_version}
 
 # Gz-sim Plugins
 USER ${robotology_install_user}
