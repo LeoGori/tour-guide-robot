@@ -255,6 +255,6 @@ RUN echo 'exec "$@"' >> /home/user1/.entrypoint.sh
 RUN chmod +x /home/user1/.entrypoint.sh
 
 WORKDIR ${user1_home}/tour-guide-robot
-RUN sudo updatedb
+#RUN sudo updatedb
 ENTRYPOINT [ "/home/user1/.entrypoint.sh" ]
 CMD ["bash"]

@@ -263,7 +263,7 @@ RUN echo ". ${robotology_install_folder}/tour-guide-robot/app/navigation2/script
 RUN echo 'exec "$@"' >> /home/user1/.entrypoint.sh
 RUN chmod +x /home/user1/.entrypoint.sh
 WORKDIR ${user1_home}
-RUN sudo updatedb
+#RUN sudo updatedb
 # Change the lidar devices permissions inside the docker to be able to start the devices with yarprobotinterface
 ENTRYPOINT [ "/home/user1/.entrypoint.sh" ]
 CMD if [ -e /dev/ttyUSB0 ]; then sudo chown user1:user1 /dev/ttyUSB0 && sudo chown user1:user1 /dev/ttyUSB1; fi && bash
