@@ -168,7 +168,7 @@ USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/robotology/gz-sim-yarp-plugins
 RUN cd gz-sim-yarp-plugins && mkdir build && cd build && \
-    cmake -DCMAKE_INSTALL_PREFIX=${robotology_install_folder}/gz-sim-yarp-plugins/install \
+    cmake .. -DCMAKE_INSTALL_PREFIX=${robotology_install_folder}/gz-sim-yarp-plugins/install \
     -DCMAKE_PREFIX_PATH=${robotology_install_folder}/gz-sim-yarp-plugins/install && \
     make -j11 && make install
 
