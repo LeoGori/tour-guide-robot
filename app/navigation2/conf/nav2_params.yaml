@@ -351,7 +351,7 @@ planner_server:
     planner_plugins:
     - GridBased
     GridBased:
-      plugin: nav2_theta_star_planner/ThetaStarPlanner
+      plugin: nav2_theta_star_planner::ThetaStarPlanner
       how_many_corners: 8
       w_euc_cost: 1.0
       w_traversal_cost: 2.0
@@ -391,13 +391,13 @@ behavior_server:
     - drive_on_heading
     - wait
     spin:
-      plugin: "nav2_behaviors/Spin"
+      plugin: "nav2_behaviors::Spin"
     backup:
-      plugin: "nav2_behaviors/BackUp"
+      plugin: "nav2_behaviors::BackUp"
     drive_on_heading:
-      plugin: "nav2_behaviors/DriveOnHeading"
+      plugin: "nav2_behaviors::DriveOnHeading"
     wait:
-      plugin: "nav2_behaviors/Wait"
+      plugin: "nav2_behaviors::Wait"
     global_frame: map
     robot_base_frame: mobile_base_body_link
     transform_tolerance: 0.1
