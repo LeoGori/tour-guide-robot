@@ -163,6 +163,17 @@ RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/p
 RUN sudo apt-get update
 RUN sudo apt-get install -y gz-${gazebo_version}
 
+# Gz-sim plugins dependencies
+WORKDIR /home/${robotology_install_user}
+RUN git clone https://github.com/CLIUtils/CLI11
+RUN cd CLI11/ && \
+    mkdir build && \
+    cd build && \
+    git submodule update --init && \
+    cmake .. && \
+    cmake --build . && \
+    sudo cmake --install .
+
 # Gz-sim Plugins
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
