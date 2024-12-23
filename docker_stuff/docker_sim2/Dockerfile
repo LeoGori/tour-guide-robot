@@ -174,20 +174,11 @@ RUN cd CLI11/ && \
     cmake --build . && \
     sudo cmake --install .
 
-# Gz-sim Plugins
-USER ${robotology_install_user}
-WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/robotology/gz-sim-yarp-plugins
-RUN cd gz-sim-yarp-plugins && mkdir build && cd build && \
-    cmake .. -DCMAKE_INSTALL_PREFIX=${robotology_install_folder}/gz-sim-yarp-plugins/install \
-    -DCMAKE_PREFIX_PATH=${robotology_install_folder}/gz-sim-yarp-plugins/install && \
-    make -j11 && make install
-
-# CER
-USER ${robotology_install_user}
-WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/robotology/cer.git
-RUN cd cer && mkdir build && cd build && cmake .. \
+    # CER
+    USER ${robotology_install_user}
+    WORKDIR ${robotology_install_folder}
+    RUN git clone https://github.com/robotology/cer.git
+    RUN cd cer && mkdir build && cd build && cmake .. \
                 -DCMAKE_BUILD_TYPE=Release \
                 -DENABLE_cermod_cerDoubleLidar=ON \
                 -DENABLE_cermod_cerOdometry=ON \
@@ -214,7 +205,15 @@ RUN git clone https://github.com/robotology/icub-contrib-common.git
 RUN cd icub-contrib-common && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=${robotology_install_folder}/iCubContrib && make -j11 install
 ENV ICUBcontrib_DIR=${robotology_install_folder}/iCubContrib/build
 
+# Gz-sim Plugins
 USER ${robotology_install_user}
+WORKDIR ${robotology_install_folder}
+RUN cd yarp/build && sudo make install
+RUN git clone https://github.com/robotology/gz-sim-yarp-plugins
+RUN cd gz-sim-yarp-plugins && mkdir build && cd build && \
+    cmake .. -DCMAKE_INSTALL_PREFIX=${robotology_install_folder}/gz-sim-yarp-plugins/install \
+    -DCMAKE_PREFIX_PATH=${robotology_install_folder}/gz-sim-yarp-plugins/install && \
+    make -j11 && make install
 
 # Set environmental variables
 RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> /home/${robotology_install_user}/.bashrc
