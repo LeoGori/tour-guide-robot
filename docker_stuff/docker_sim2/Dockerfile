@@ -174,15 +174,15 @@ RUN cd CLI11/ && \
     cmake --build . && \
     sudo cmake --install .
 
-    # CER
-    USER ${robotology_install_user}
-    WORKDIR ${robotology_install_folder}
-    RUN git clone https://github.com/robotology/cer.git
-    RUN cd cer && mkdir build && cd build && cmake .. \
-                -DCMAKE_BUILD_TYPE=Release \
-                -DENABLE_cermod_cerDoubleLidar=ON \
-                -DENABLE_cermod_cerOdometry=ON \
-                -DENABLE_cermod_tripodMotionControl=ON && make -j11
+# CER
+USER ${robotology_install_user}
+WORKDIR ${robotology_install_folder}
+RUN git clone https://github.com/robotology/cer.git
+RUN cd cer && mkdir build && cd build && cmake .. \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DENABLE_cermod_cerDoubleLidar=ON \
+            -DENABLE_cermod_cerOdometry=ON \
+            -DENABLE_cermod_tripodMotionControl=ON && make -j11
 ENV CER_ROOT=${robotology_install_folder}/cer
 ENV CER_DIR=${robotology_install_folder}/cer/build
 
