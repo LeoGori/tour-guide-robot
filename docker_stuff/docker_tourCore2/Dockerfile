@@ -1,5 +1,4 @@
-# Dockerfile that is supposed to replace the one in tour-guide-robot to build the image to test fcclip in visual-language-navigation
-# The dockerfile builds Ubuntu 24.04 with ROS2 Jazzy and CUDA 12.4
+# The dockerfile builds Ubuntu 24.04 with ROS2 Jazzy and custom CUDA Toolkit version (default is 12.1)
 
 ARG base_img
 FROM $base_img
