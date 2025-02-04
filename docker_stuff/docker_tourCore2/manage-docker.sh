@@ -138,7 +138,7 @@ get_opts()
 
 # Set default values
 source ../docker_mng_vars.sh
-BASE_TAG_DEF="tourCore2"
+BASE_TAG_DEF="tourCore2_ubuntu24.04_jazzy_stable"
 
 #Set Variables
 BUILD_SUFFIX=$DEVEL_SUFFIX
@@ -167,10 +167,10 @@ get_opts $@
 if [[ $YARP_BRANCH != "master" ]]; then
     YARP_TAG=$YARP_BRANCH$JUNCTION
 fi
-COMPLETE_IMAGE_NAME=$REPO$REPO_SEP$BASE_TAG$JUNCTION$PARENT_SUFFIX$JUNCTION$ROS_DISTRO$JUNCTION$YARP_TAG$BUILD_SUFFIX
+COMPLETE_IMAGE_NAME=$REPO$REPO_SEP$BASE_TAG$JUNCTION$YARP_TAG$BUILD_SUFFIX
 
 if [[ $GONNA_BUILD == "true" ]]; then
-    sudo docker build --build-arg base_img=$IMAGE --build-arg ros_distro=$ROS_DISTRO --build-arg yarp_branch=$YARP_BRANCH --build-arg ros2_dev_branch=$ROS2_DEV_BRANCH --build-arg ros2_dev_remote=$ROS2_DEV_REMOTE  -t $COMPLETE_IMAGE_NAME .
+    sudo docker build --build-arg base_img=$REPO$REPO_SEP$BASE_TAG --build-arg ros_distro=$ROS_DISTRO --build-arg yarp_branch=$YARP_BRANCH --build-arg ros2_dev_branch=$ROS2_DEV_BRANCH --build-arg ros2_dev_remote=$ROS2_DEV_REMOTE -t $COMPLETE_IMAGE_NAME .
 else
     sudo xhost +
     if [[ $RUN_WITH_GPU == "true" ]]; then
