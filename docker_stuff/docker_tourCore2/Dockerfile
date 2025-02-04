@@ -10,22 +10,24 @@ ARG CUDA_VERSION=12.1
 # # Non-interactive installation mode
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Iterate over all the Ubuntu versions to find the latest CUDA version, starting from the most recent
 RUN for ubuntu_v in 2404 2204 2004 1804 1604 1404 1304 1204; do \
-        echo "Ubuntu version: $ubuntu_v"; \
-        # CUDA_FILE=$(curl -s https://developer.download.nvidia.com/compute/cuda/repos/ubuntu$ubuntu_v/x86_64/ | grep -oP "(?<=href=')[^']+" | grep "^cuda-$CUDA_MAJOR-$CUDA_MINOR" | tail -1); \
-        echo "URL to search: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu$ubuntu_v/x86_64/"; \
+        echo "Looking for CUDA version "$CUDA_VERSION" in Ubuntu $ubuntu_v"; \
+        echo "Looking into: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu$ubuntu_v/x86_64/"; \
+        # extract cuda major and minor versions from the full version string
         CUDA_MAJOR=$(echo "$CUDA_VERSION" | cut -d. -f1) && CUDA_MINOR=$(echo "$CUDA_VERSION" | cut -d. -f2) && \
-        # curl -s "https://developer.download.nvidia.com/compute/cuda/repos/ubuntu$ubuntu_v/x86_64/" | grep -oP "(?<=href=')[^']+" | grep "^cuda-$CUDA_MAJOR-$CUDA_MINOR" | tail -1 > file_list.txt; \
-        # cat file_list.txt; \
-        # CUDA_FILE=$(grep "^cuda-" file_list.txt | tail -1); \
+        # get the latest version of the specified major and minor versions
         CUDA_FILE=$(curl -s https://developer.download.nvidia.com/compute/cuda/repos/ubuntu$ubuntu_v/x86_64/ | grep -oP "(?<=href=')[^']+" | grep "^cuda-$CUDA_MAJOR-$CUDA_MINOR" | tail -1); \
-        echo "CUDA file: $CUDA_FILE"; \
         if [ -n "$CUDA_FILE" ]; then \
+            echo "Found CUDA file: $CUDA_FILE"; \
+            # get the latest version of the keyring
             CUDA_KEYRING=$(curl -s https://developer.download.nvidia.com/compute/cuda/repos/ubuntu$ubuntu_v/x86_64/ | grep -oP "(?<=href=')[^']+" | grep "^cuda-keyring" | tail -1); \
+            # download the keyring
             wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu$ubuntu_v/x86_64/$CUDA_KEYRING; \
             break; \
         fi; \
     done; \
+    # check if the CUDA version was found, otherwise exit
     if [ -z "$CUDA_FILE" ]; then \
         echo "CUDA version not found"; \
         exit 1; \
