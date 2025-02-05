@@ -42,7 +42,7 @@ RUN sudo dpkg -i cuda-keyring*.deb
 RUN sudo apt-get update
 # RUN sudo apt-get upgrade -y
 RUN CUDA_MAJOR=$(echo "$CUDA_VERSION" | cut -d. -f1) && CUDA_MINOR=$(echo "$CUDA_VERSION" | cut -d. -f2) && \
-    sudo apt-get install -y cuda-$CUDA_MAJOR-$CUDA_MINOR
+    sudo apt-get install -y cuda-toolkit-$CUDA_MAJOR-$CUDA_MINOR
 
 RUN echo "export PATH=/usr/local/cuda-$CUDA_VERSION/bin${PATH:+:${PATH}}" >> ~/.bashrc
 RUN echo "export LD_LIBRARY_PATH=/usr/local/cuda-$CUDA_VERSION/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}" >> ~/.bashrc
