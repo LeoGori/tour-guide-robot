@@ -16,8 +16,9 @@ usage()
     echo "    -e, --repo  + \"repo_name\"          Build/run the image with the passed repository reference"
     echo "    -r, --ros_distro + \"distro_name\"   Build/run the image with the passed distro (the passed value will be also used to compose the image tag)"
     echo "    -y, --yarp_branch + \"yarp branch\"  Build/run the image with the passed yarp branch (the passed value, if different from \"master\", will be also used to compose the image tag)."
+    echo "    -bi, --base-image + \"base_image\"   Build/run the image with the passed base image"
+    echo "    -cv, --cuda-version + \"cuda_version\" Build/run the image with the passed cuda version"
     echo "                                       If not passed, the branch used will be \"master\""
-    echo "    -p, --print                        Just print the image name that would be built/run with the passed options"
     echo "    -h, --help                         See current help"
     echo "If the parent image is not specified (neither -u nor -c), the '$UBUNTU_DEF' one will be used"
     echo "If the build type is not specified (neither -d nor -s), the '$DEVEL_SUFFIX' tag will be used"
@@ -120,12 +121,30 @@ get_opts()
             -h|--help)
                 usage
                 ;;
-            -p|--print)
-                shift
-                JUST_PRINT=true
-                ;;
             -v|--version)
                 version
+                ;;
+            -bi|--base-image)
+                if [[ $IMAGE_SET == "true" ]]; then
+                    echo "Base image already set"
+                    usage
+                fi
+                shift
+                IMAGE=$1
+                IMAGE_SET=true
+                GONNA_BUILD=true
+                shift
+                ;;
+            -cv|--cuda-version)
+                if [[ $CUDA_VERSION_SET == "true" ]]; then
+                    echo "CUDA Version already set"
+                    usage
+                fi
+                shift
+                CUDA_VERSION=$1
+                CUDA_VERSION_SET=true
+                GONNA_BUILD=true
+                shift
                 ;;
             *)
                 echo "Unsupported arg"
@@ -146,10 +165,8 @@ source ../docker_mng_vars.sh
 BASE_TAG_DEF="tourCore2"
 
 #Set Variables
-JUST_PRINT=false
 BUILD_SUFFIX=$DEVEL_SUFFIX
 VERSION="1.0.0"
-ROS_DISTRO=$ROS_DEF
 YARP_BRANCH=$YARP_DEF
 YARP_TAG=""
 PARENT_SUFFIX=$UBUNTU_SUFFIX
@@ -159,10 +176,12 @@ GONNA_BUILD=false
 RUN_WITH_GPU=true
 ROS_SET=false
 YARP_SET=false
-IMAGE=$UBUNTU_DEF
+IMAGE="elandini84/r1images:tourCore2_ubuntu24.04_jazzy_stable"
 REPO=$REPO_DEF
 REPO_SET=false
 BASE_TAG=$BASE_TAG_DEF
+CUDA_VERSION=12.1
+CUDA_VERSION_SET=false
 
 ############################################################
 # Process the input options. Add options as needed.        #
@@ -173,15 +192,17 @@ get_opts $@
 if [[ $YARP_BRANCH != "master" ]]; then
     YARP_TAG=$YARP_BRANCH$JUNCTION
 fi
-COMPLETE_IMAGE_NAME=$REPO$REPO_SEP$BASE_TAG$JUNCTION$PARENT_SUFFIX$JUNCTION$ROS_DISTRO$JUNCTION$YARP_TAG$BUILD_SUFFIX
 
-if [[ $JUST_PRINT == "true" ]]; then
-    echo $COMPLETE_IMAGE_NAME
-    exit
-fi
+# if [[$IMAGE_SET == "true"]]; then
+#     COMPLETE_IMAGE_NAME="$IMAGE$JUNCTION$cuda$CUDA_VERSION"
+# else
+#     COMPLETE_IMAGE_NAME=$REPO$REPO_SEP$BASE_TAG$JUNCTION$PARENT_SUFFIX$JUNCTION$ROS_DISTRO$JUNCTION$YARP_TAG$BUILD_SUFFIX
+# fi
+
+COMPLETE_IMAGE_NAME="$IMAGE${JUNCTION}cuda$CUDA_VERSION"
 
 if [[ $GONNA_BUILD == "true" ]]; then
-    sudo docker build --build-arg base_img=$IMAGE --build-arg ros_distro=$ROS_DISTRO --build-arg yarp_branch=$YARP_BRANCH --build-arg ros2_dev_branch=$ROS2_DEV_BRANCH --build-arg ros2_dev_remote=$ROS2_DEV_REMOTE  -t $COMPLETE_IMAGE_NAME .
+    sudo docker build --build-arg base_img=$IMAGE --build-arg cuda_version=$CUDA_VERSION -t $COMPLETE_IMAGE_NAME .
 else
     sudo xhost +
     if [[ $RUN_WITH_GPU == "true" ]]; then
