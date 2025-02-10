@@ -31,7 +31,7 @@ def generate_launch_description():
 
     declare_use_sim_time_cmd = DeclareLaunchArgument(
         'use_sim_time',
-        default_value='false',
+        default_value='False',
         description='Use simulation (Gazebo) clock if true')
 
     declare_autostart_cmd = DeclareLaunchArgument(
@@ -63,42 +63,45 @@ def generate_launch_description():
     start_lifecycle_manager_cmd = Node(
             package='nav2_lifecycle_manager',
             executable='lifecycle_manager',
-            name='lifecycle_manager_costmap_filters',
-            namespace=namespace,
+            name='lifecycle_manager_filters',
             output='screen',
             emulate_tty=True,  # https://github.com/ros2/launch/issues/188
             parameters=[{'use_sim_time': use_sim_time},
-                        {'autostart': autostart},
-                        {'node_names': lifecycle_nodes}])
+                        {'autostart': True},
+                        {'node_names': ['filter_mask_server', 'costmap_filter_info_server']}])
 
     start_map_server_cmd = Node(
             package='nav2_map_server',
             executable='map_server',
             name='filter_mask_server',
-            namespace=namespace,
             output='screen',
             emulate_tty=True,  # https://github.com/ros2/launch/issues/188
-            parameters=[configured_params])
+            parameters=[{'frame_id': "map"},
+                        {'topic_name': "/keepout_filter_mask"},
+                        {'yaml_filename': "/usr/local/src/robot/tour-guide-robot/app/maps/cris_new_area_fixed_keepout_mask.yaml"}])
 
     start_costmap_filter_info_server_cmd = Node(
             package='nav2_map_server',
             executable='costmap_filter_info_server',
             name='costmap_filter_info_server',
-            namespace=namespace,
             output='screen',
             emulate_tty=True,  # https://github.com/ros2/launch/issues/188
-            parameters=[configured_params])
+            parameters=[{'type': 0},
+                        {'filter_info_topic': "/costmap_filter_info"},
+                        {'mask_topic': "/keepout_filter_mask"},
+                        {'base': 0.0},
+                        {'multiplier': 1.0}])
 
     ld = LaunchDescription()
 
-    ld.add_action(declare_namespace_cmd)
+    #ld.add_action(declare_namespace_cmd)
     ld.add_action(declare_use_sim_time_cmd)
     ld.add_action(declare_autostart_cmd)
-    ld.add_action(declare_params_file_cmd)
-    ld.add_action(declare_mask_yaml_file_cmd)
+    #ld.add_action(declare_params_file_cmd)
+    #ld.add_action(declare_mask_yaml_file_cmd)
 
     ld.add_action(start_lifecycle_manager_cmd)
     ld.add_action(start_map_server_cmd)
     ld.add_action(start_costmap_filter_info_server_cmd)
-
+    #ld.add_action(start_lifecycle_manager_cmd)
     return ld

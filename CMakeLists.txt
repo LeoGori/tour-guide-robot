@@ -19,7 +19,7 @@ if(${BTState})
 	# BehaviorTree.CPP links Boost::coroutine, but does not look for it
 	find_package(Boost COMPONENTS coroutine REQUIRED)
 	find_package(ament_index_cpp)
-	find_package(behaviortree_cpp_v3 REQUIRED)
+	find_package(behaviortree_cpp REQUIRED)
 endif()
 find_package(YCM REQUIRED)
 
