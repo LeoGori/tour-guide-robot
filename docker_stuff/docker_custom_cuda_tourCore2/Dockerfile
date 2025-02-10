@@ -42,11 +42,7 @@ RUN sudo apt-get update
 RUN CUDA_MAJOR=$(echo "$cuda_version" | cut -d. -f1) && CUDA_MINOR=$(echo "$cuda_version" | cut -d. -f2) && \
     sudo apt-get install -y cuda-toolkit-$CUDA_MAJOR-$CUDA_MINOR
 
-RUN echo "export PATH=/usr/local/cuda-$cuda_version/bin${PATH:+:${PATH}}" >> /home/${robotology_install_user}/.bashrc
-RUN echo "export LD_LIBRARY_PATH=/usr/local/cuda-$cuda_version/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}" >> /home/${robotology_install_user}/.bashrc
+ENV PATH=/usr/local/cuda-$cuda_version/bin${PATH:+:${PATH}}
+ENV LD_LIBRARY_PATH=/usr/local/cuda-$cuda_version/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 
 RUN rm cuda*
-
-# Execute the entrypoint (for the second time) to ensure ros2 is sourced
-# TODO: Understand why the entrypoint is not executed correctly the first time
-CMD ["bash", "-c", "exec /home/user1/.entrypoint.sh"]
